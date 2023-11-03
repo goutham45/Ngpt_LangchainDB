@@ -10,11 +10,13 @@ import { DataService } from './data.service';
 import { HttpClientModule } from '@angular/common/http';
 import { ChartsComponent } from './charts/charts.component';
 import { MatInputModule } from '@angular/material/input';
+import { ChatbotComponent } from './chatbot/chatbot.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ChartsComponent
+    ChartsComponent,
+    ChatbotComponent
   ],
   imports: [
     BrowserModule,
