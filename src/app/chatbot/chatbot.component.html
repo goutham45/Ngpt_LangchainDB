@@ -1,10 +1,27 @@
-
-  <div class="chat-container">
-    <div *ngFor="let message of chatMessages" [ngClass]="message.role">
+<!-- 
+<div class="chat-container">
+  <div *ngFor="let message of chatHeaders" [ngClass]="message.role">
     <div [innerHTML]="message.content"></div>
-      <!-- {{ message.content }} -->
+  </div></div> -->
+  
+
+<div class="chat-container">
+  <!-- Displaying headers and regular messages -->
+  <div *ngFor="let message of chatMessages" [ngClass]="message.role">
+    <div *ngIf="message.type === 'table'">
+      <div [innerHTML]="message.content"></div><br><br>
+      <strong><h4>select 2 columns to plot the graph:</h4></strong>
+      <div *ngFor="let header of message.headers" style="display: inline-block; margin-right: 10px;">
+        <button>{{ header }}</button>
+      </div>
+    </div>
+    <div *ngIf="message.type !== 'table'">
+      <div [innerHTML]="message.content"></div>
     </div>
   </div>
+</div>
+
+  
   <div class="input-container">
     <input [(ngModel)]="userMessage" placeholder="Enter your message" />
     <button (click)="sendMessage()">Send</button>

@@ -7,8 +7,8 @@ const app = express();
 const port = 3000; // Choose a suitable port
 
 const openai = new OpenAI({
-  apiKey: ""
-
+  apiKey: "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",
+  // apiKey: "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",
 
 });
 
@@ -51,11 +51,21 @@ app.get('/connect-to-database/:token', (req, res) => {
 app.post("/chat", async (req, res) => {
   const { message } = req.body;
   console.log(message)
+
   const chatCompletion = await openai.chat.completions.create({
     model: "gpt-3.5-turbo",
     messages: [{ role: "system", content: "You are a MySQL expert. Given an input question, create a syntactically correct MySQL query to run, make any reasonable assumptions, also mention if the output is an SQL or not\\n\\nUse the following format:\\n\\nQuestion: \\\"Get me all actors\\\"\\n```sql select * from actors```\\nSTOP\\nQuestion: \\\"How are you\\\"\\nGeneral: I am fine\\nSTOP\\n\\n\\nOnly use the following tables:\\nCREATE TABLE Properties (\\n    PropertyID INT NOT NULL PRIMARY KEY,\\n    Address VARCHAR(255),\\n    City VARCHAR(255),\\n    State VARCHAR(2),\\n    Zipcode VARCHAR(10),\\n    Bedrooms INT,\\n    Bathrooms INT,\\n    SquareFeet INT\\n);\\n\\nCREATE TABLE PropertySales (\\n    SaleID INT NOT NULL PRIMARY KEY,\\n    PropertyID INT,\\n    SaleDate DATE,\\n    SalePrice DECIMAL(10,2)\\n);\\n\\nCREATE TABLE Submarkets (\\n    SubmarketID INT NOT NULL PRIMARY KEY,\\n    SubmarketName VARCHAR(255),\\n    PropertyID INT\\n);\\n\"" }, 
                 { role: "user", content: message }, 
-                { role: "assistant", content: "" } ],
+                { role: "assistant", content: "" },
+                // ...messageHistory.map(
+                //   (message): ChatCompletionRequestMessage => ({
+                //     role: message.sender === "ai" ? "assistant" : "user",
+                //     content: message.text,
+
+                //   })
+                // )
+              
+              ],
   });
   console.log(chatCompletion.choices[0].message);
 
@@ -67,9 +77,10 @@ app.post("/chat", async (req, res) => {
   const regex = /```sql([\s\S]*)```/;
   const match = regex.exec(reply);
   if (match) {
-    console.log("THis is match:",reply)
+    // console.log("THis is match:",reply)
     const sqlCode = match[1].trim();
-    console.log("here it isss",sqlCode)
+    console.log("tHIS QUERY IS EXECUTED IN DATABASE:",sqlCode)
+    // console.log("here it isss",sqlCode)
         // displays the result in HTML tags of table
           getSql(sqlCode, (error, results) => {
             if (error) {
@@ -97,15 +108,15 @@ app.post("/chat", async (req, res) => {
                 });
 
                 tableHTML += '</tbody></table>';
-                res.json({ reply: tableHTML });
-                // res.json(reply : tableHTML);
+                // res.json({ reply: tableHTML });
+                res.json({ reply: [tableHTML, sqlCode] });
               } else {
                 res.json({ reply: 'No data available' });
               }
             }
           });
         } else {
-          console.log("No SQL Statements:", typeof reply);
+          console.log("No SQL Statements:", reply);
           res.json({ reply });
         }
 

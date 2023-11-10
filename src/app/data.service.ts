@@ -15,6 +15,7 @@ export class DataService {
 
   sendMessage(userMessage: string): Observable<any> {
     const url = '/chat'; // The endpoint to Chat with openai
+    console.log(userMessage)
     const requestBody = { message: userMessage };
     console.log(requestBody)
     console.log(this.http.post(url, requestBody))
