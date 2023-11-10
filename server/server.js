@@ -7,8 +7,7 @@ const app = express();
 const port = 3000; // Choose a suitable port
 
 const openai = new OpenAI({
-  apiKey: "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",
-  // apiKey: "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",
+  apiKey: "", // gouthamkey
 
 });
 
